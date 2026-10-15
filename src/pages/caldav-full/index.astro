@@ -175,7 +175,7 @@ const sections = [
           <h3>Setup</h3>
           <ul>
             <li><strong>Failed to connect.</strong> Home Assistant could not reach the CalDAV server. A timeout or connection error raises the same kind of failure while the integration starts.</li>
-            <li><strong>Invalid authentication.</strong> The username or password was not accepted. A later write can also report that CalDAV authentication failed.</li>
+            <li><strong>Invalid authentication.</strong> The username or password was not accepted. A later read can report <strong>CalDAV authentication failed</strong>. A later write can report <strong>CalDAV update authentication failed</strong> or <strong>CalDAV delete authentication failed</strong>.</li>
             <li><strong>Unexpected error.</strong> Setup hit an error that is not a connection or authentication failure.</li>
             <li><strong>Account is already configured.</strong> That CalDAV account is already set up.</li>
           </ul>
@@ -185,17 +185,17 @@ const sections = [
           </p>
           <ul>
             <li><strong>Recurring event changes are not supported for this calendar.</strong> This covers a whole-series edit or deletion, a <code>THISANDFUTURE</code> change, an unsupported series shape, and an attempt to add a recurrence rule to an existing event.</li>
-            <li><strong>The start or end must stay a timed value, or must stay an all-day date.</strong> An all-day event cannot be changed into a timed event, or the reverse, through this integration.</li>
-            <li><strong>The time zone does not match the stored event.</strong></li>
+            <li><strong>Start must stay a timed value</strong> or <strong>End must stay a timed value</strong>. <strong>Start must stay an all-day date</strong> or <strong>End must stay an all-day date</strong>. An all-day event cannot be changed into a timed event, or the reverse, through this integration.</li>
+            <li><strong>Start time zone does not match the stored event</strong> or <strong>End time zone does not match the stored event</strong>.</li>
             <li><strong>Calendar event end must be after its start.</strong></li>
           </ul>
           <h3>Events that cannot be changed safely</h3>
           <ul>
-            <li><strong>Calendar event was not found.</strong> The requested event is not on the server. A missing event is not created in its place.</li>
-            <li><strong>Calendar event is ambiguous.</strong> More than one stored object matches that event.</li>
-            <li><strong>Calendar event is outside the selected calendar.</strong> The event resource is not inside the confirmed collection. A redirect away from that collection is reported the same way.</li>
-            <li><strong>Calendar event cannot be changed safely without an ETag.</strong> The server did not provide an ETag for the event, so the conditional write stops.</li>
-            <li><strong>CalDAV update or delete conflict: the event changed on the server.</strong> The stored event no longer matches the copy that was read.</li>
+            <li><strong>Calendar event {'{uid}'} was not found</strong>. The requested event is not on the server. A missing event is not created in its place.</li>
+            <li><strong>Calendar event {'{uid}'} is ambiguous</strong>. More than one stored object matches that event.</li>
+            <li><strong>Calendar event {'{uid}'} is outside the selected calendar</strong>. The event resource is not inside the confirmed collection. A redirect away from that collection is reported the same way.</li>
+            <li><strong>Calendar event {'{uid}'} cannot be changed safely without an ETag</strong>. The server did not provide an ETag for the event, so the conditional write stops.</li>
+            <li><strong>CalDAV update conflict: the event changed on the server</strong> or <strong>CalDAV delete conflict: the event changed on the server</strong>. The stored event no longer matches the copy that was read.</li>
           </ul>
         </section>
 
