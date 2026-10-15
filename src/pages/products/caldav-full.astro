@@ -1,0 +1,123 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const capabilities = [
+  {
+    title: "Connect & Select",
+    text: "Connect to a CalDAV account and choose which discovered calendars to expose.",
+  },
+  {
+    title: "Read & Create",
+    text: "Read calendar events and create new events, including supported recurring series.",
+  },
+  {
+    title: "Edit Events",
+    text: "Update or delete supported non-recurring events.",
+  },
+  {
+    title: "Recurring Occurrences",
+    text: "Modify or exclude an individual occurrence of a supported recurring series.",
+  },
+];
+---
+
+<BaseLayout
+  title="CalDAV Full"
+  description="A Home Assistant calendar integration for connecting to CalDAV calendars and managing supported event operations. Preview — not publicly released."
+>
+  <div class="product-page">
+    <header class="page-intro product-hero">
+      <div class="wrap product-lead">
+        <img
+          class="product-mark"
+          src="/images/brand/caldav-full.png"
+          width="512"
+          height="472"
+          alt=""
+        />
+        <p class="status-label">Preview — Not publicly released</p>
+        <h1 class="product-title">CalDAV Full</h1>
+        <p class="lede">
+          A Home Assistant calendar integration for connecting to CalDAV calendars and managing supported event operations.
+        </p>
+      </div>
+    </header>
+
+    <section class="page-section" aria-labelledby="what-heading">
+      <div class="wrap">
+        <h2 id="what-heading">What it does</h2>
+        <p>
+          CalDAV Full connects Home Assistant to a CalDAV account. You choose which discovered calendars become available in Home Assistant.
+        </p>
+        <p>
+          It is a separate integration and does not replace Home Assistant’s built-in CalDAV integration.
+        </p>
+      </div>
+    </section>
+
+    <section class="portfolio" aria-labelledby="capabilities-heading">
+      <div class="wrap">
+        <h2 id="capabilities-heading">Supported capabilities</h2>
+        <div class="capability-grid">
+          {
+            capabilities.map((item) => (
+              <article class="capability-group">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="recurring-heading">
+      <div class="wrap">
+        <h2 id="recurring-heading">Recurring events</h2>
+        <p>
+          You can edit or exclude an individual occurrence of a supported recurring series. Whole-series editing and deletion are not supported, and neither are <code>THISANDFUTURE</code> changes.
+        </p>
+        <p>
+          Additional recurrence restrictions are documented in{" "}
+          <a class="text-link" href="/caldav-full#recurring-events">Recurring events</a>.
+        </p>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="requirements-heading">
+      <div class="wrap">
+        <h2 id="requirements-heading">Requirements</h2>
+        <ul>
+          <li>Home Assistant Core 2026.10.0.</li>
+          <li>Network access to a CalDAV server.</li>
+          <li>Compatibility is limited to the verified implementation and documented testing.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="docs-heading">
+      <div class="wrap">
+        <div class="docs-cta">
+          <h2 id="docs-heading">Explore the documentation</h2>
+          <p>
+            Learn about configuration, supported calendar operations, recurring events, and known limitations.
+          </p>
+          <p>
+            <a class="text-link docs-cta-link" href="/caldav-full">
+              Read documentation
+              <span class="docs-cta-arrow" aria-hidden="true">→</span>
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="availability-heading">
+      <div class="wrap">
+        <h2 id="availability-heading">Availability</h2>
+        <p class="status-label">Preview — Not publicly released</p>
+        <p>CalDAV Full is not currently available as a public download.</p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

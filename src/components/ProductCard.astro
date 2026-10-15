@@ -1,0 +1,37 @@
+---
+interface Props {
+  name: string;
+  href?: string;
+  note: string;
+  icon?: string;
+  heading?: "h3" | "h4";
+}
+
+const { name, href, note, icon, heading = "h3" } = Astro.props;
+const Tag = href ? "a" : "div";
+const Heading = heading;
+---
+
+<Tag
+  class:list={[
+    "product-card",
+    { "product-card--has-icon": Boolean(icon), "product-card--static": !href },
+  ]}
+  href={href}
+>
+  <div class="product-card-copy">
+    <Heading>{name}</Heading>
+    <p>{note}</p>
+  </div>
+  {icon && <img class="product-icon" src={icon} width="512" height="472" alt="" />}
+  {
+    href && (
+      <span class="card-action">
+        View {name}
+        <span class="card-arrow" aria-hidden="true">
+          →
+        </span>
+      </span>
+    )
+  }
+</Tag>

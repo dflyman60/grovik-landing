@@ -1,0 +1,57 @@
+---
+import ProductCard from "./ProductCard.astro";
+
+interface Props {
+  labelledBy: string;
+  variant: "home" | "page";
+}
+
+const { labelledBy, variant } = Astro.props;
+const Group = variant === "page" ? "h2" : "h3";
+const cardHeading = variant === "page" ? "h3" : "h4";
+---
+
+<section class="portfolio" aria-labelledby={labelledBy}>
+  <div class="wrap">
+    {variant === "home" && <p class="section-label">Portfolio</p>}
+    {variant === "page" ? <h1 id={labelledBy}>Products</h1> : <h2 id={labelledBy}>Products</h2>}
+
+    <div class="product-group">
+      <Group class="product-group-title">Grovik Products</Group>
+      <div class="product-grid">
+        <ProductCard name="Allira" note="Coming soon" heading={cardHeading} />
+        <ProductCard name="Claro" note="Coming soon" heading={cardHeading} />
+        <ProductCard
+          name="Haylo"
+          href="/products/haylo"
+          note="A Grovik software product. Details coming soon."
+          heading={cardHeading}
+        />
+        <ProductCard
+          name="CalDAV Full"
+          href="/products/caldav-full"
+          note="Connect CalDAV calendars to Home Assistant and manage supported events, including individual recurring occurrences."
+          icon="/images/brand/caldav-full.png"
+          heading={cardHeading}
+        />
+      </div>
+    </div>
+
+    <div class="product-group">
+      <Group class="product-group-title">
+        <img
+          class="square-mark"
+          src="/images/brand/square-logo.png"
+          width="184"
+          height="184"
+          alt=""
+        />
+        Square Ecosystem
+      </Group>
+      <div class="product-grid">
+        <ProductCard name="Pre-Flight" note="Coming soon" heading={cardHeading} />
+        <ProductCard name="Data Preservation" note="Coming soon" heading={cardHeading} />
+      </div>
+    </div>
+  </div>
+</section>

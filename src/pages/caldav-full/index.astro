@@ -1,0 +1,237 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DocNav from "../../components/DocNav.astro";
+
+const sections = [
+  { id: "overview", label: "Overview" },
+  { id: "requirements", label: "Requirements and compatibility" },
+  { id: "installation", label: "Installation" },
+  { id: "configuration", label: "Configuration" },
+  { id: "operations", label: "Calendar operations" },
+  { id: "recurring-events", label: "Recurring events" },
+  { id: "limitations", label: "Known limitations" },
+  { id: "troubleshooting", label: "Troubleshooting" },
+  { id: "faq", label: "Frequently asked questions" },
+  { id: "support", label: "Support" },
+];
+---
+
+<BaseLayout
+  title="CalDAV Full documentation"
+  description="Documentation for CalDAV Full, a Home Assistant calendar integration. Preview — not publicly released."
+>
+  <div class="doc-page">
+    <div class="doc-layout">
+      <DocNav sections={sections} />
+
+      <header class="doc-intro">
+        <p class="status-label">Preview — Not publicly released</p>
+        <h1>CalDAV Full</h1>
+        <p>
+          Documentation for the CalDAV Full calendar integration for Home Assistant.{" "}
+          <a class="text-link" href="/products/caldav-full">Product page</a>
+        </p>
+      </header>
+
+      <article class="doc-content">
+        <section id="overview" aria-labelledby="overview-heading">
+          <h2 id="overview-heading">Overview</h2>
+          <p>
+            CalDAV Full is a custom Home Assistant integration from Grovik LLC. It connects to a CalDAV account, lists calendar collections, and exposes only the collections you confirm.
+          </p>
+          <p>
+            It is a separate integration. It does not replace or modify Home Assistant’s built-in CalDAV integration. It works with calendar events. It does not provide to-do lists.
+          </p>
+          <p>
+            The current source is version 0.1.0. That version is a preview and has not been publicly released.
+          </p>
+        </section>
+
+        <section id="requirements" aria-labelledby="requirements-heading">
+          <h2 id="requirements-heading">Requirements and compatibility</h2>
+          <ul>
+            <li>Home Assistant Core 2026.10.0.</li>
+            <li>Python 3.14.2 or newer, matching that Core release.</li>
+            <li>Network access to the CalDAV server.</li>
+          </ul>
+          <p>The integration installs these pinned libraries:</p>
+          <ul>
+            <li><code>caldav==3.3.0a1</code></li>
+            <li><code>icalendar==6.3.1</code></li>
+            <li><code>vobject==0.9.9</code></li>
+          </ul>
+          <p>
+            Do not install it on an older Home Assistant Core release. Those library pins match Core 2026.10.0. Compatibility with other Core versions is not established.
+          </p>
+          <p>
+            Apple CalDAV has a recorded result for calendar discovery, event reads, creating a series, conditional create, update, and delete of a non-recurring event, and editing or excluding one occurrence of a supported series. That record does not extend to every CalDAV provider. The limits are listed under <a href="#limitations">Known limitations</a>.
+          </p>
+        </section>
+
+        <section id="installation" aria-labelledby="installation-heading">
+          <h2 id="installation-heading">Installation</h2>
+          <div class="doc-note">
+            <p>
+              CalDAV Full is not publicly released. The source repository is currently private. HACS default-store installation is not available. There is no public download on this website.
+            </p>
+            <p>
+              The steps below apply only to someone who already has authorized access to the source.
+            </p>
+          </div>
+          <ol class="doc-steps">
+            <li>Copy <code>custom_components/caldav_full</code> into the Home Assistant <code>config/custom_components</code> directory.</li>
+            <li>Restart Home Assistant.</li>
+            <li>Go to Settings, Devices &amp; services, Add integration, and choose CalDAV Full.</li>
+          </ol>
+        </section>
+
+        <section id="configuration" aria-labelledby="configuration-heading">
+          <h2 id="configuration-heading">Configuration</h2>
+          <p>The setup form asks for:</p>
+          <ul>
+            <li>CalDAV URL</li>
+            <li>Username</li>
+            <li>Password</li>
+            <li>Whether to verify the SSL certificate</li>
+          </ul>
+          <p>
+            After sign-in, CalDAV Full lists calendar names. A new setup starts with nothing selected. Newly discovered calendars stay unselected. A checked calendar is not activated until the confirmation step. Closing the dialog does not save.
+          </p>
+          <ul>
+            <li>
+              <strong>Continue with no calendars.</strong> CalDAV Full creates no calendar entity. It can still sign in and list calendar names.
+            </li>
+            <li>
+              <strong>Activate the checked calendars.</strong> Each selected collection becomes a calendar entity. That entity can create, update, and delete events, within the operations this integration supports.
+            </li>
+          </ul>
+          <p>
+            The same confirmation is required when you change the selection later. Clearing every box and confirming removes the exposed calendars.
+          </p>
+          <p>
+            If the same account is already configured, setup stops with “Account is already configured.” If the stored password is no longer valid, Home Assistant asks for that username’s password again.
+          </p>
+        </section>
+
+        <section id="operations" aria-labelledby="operations-heading">
+          <h2 id="operations-heading">Calendar operations</h2>
+          <p>For a calendar you have confirmed, CalDAV Full can:</p>
+          <ul>
+            <li>Read events, including all-day events, timed events, and expanded occurrences of a supported series.</li>
+            <li>Create an event. A create can include one recurrence rule, which creates a new series. A create can also include a description and a location.</li>
+            <li>Update or delete one non-recurring event. The write uses that event’s ETag, so a change is sent only when the stored copy still matches.</li>
+          </ul>
+          <p>
+            A selected calendar polls for the next event about every 15 minutes. Opening a date range reads that range from the server.
+          </p>
+          <p class="doc-note">
+            Home Assistant still shows create, update, and delete for the calendar entity. Requests outside the supported operations fail when they are made. There is no separate read-only mode.
+          </p>
+        </section>
+
+        <section id="recurring-events" aria-labelledby="recurring-heading">
+          <h2 id="recurring-heading">Recurring events</h2>
+          <h3>Supported</h3>
+          <ul>
+            <li>Create a series by including one recurrence rule on a new event.</li>
+            <li>Update one occurrence of a supported series. CalDAV Full writes an override for that occurrence’s original start.</li>
+            <li>Exclude one occurrence of a supported series. CalDAV Full writes an exclusion and keeps the rest of the series.</li>
+          </ul>
+          <h3>Not supported</h3>
+          <p>These requests are rejected before the stored series is changed:</p>
+          <ul class="doc-limitations">
+            <li>Editing an entire recurring series.</li>
+            <li>Deleting an entire recurring series.</li>
+            <li>A <code>THISANDFUTURE</code> change, which would apply to one occurrence and the occurrences after it.</li>
+            <li>Adding or changing a recurrence rule on an existing non-recurring event.</li>
+            <li>A series with more than one <code>RRULE</code>.</li>
+            <li>An <code>EXRULE</code>.</li>
+            <li>A period <code>RDATE</code>.</li>
+            <li>Updating or deleting an occurrence when the event itself stores an <code>RDATE</code>.</li>
+          </ul>
+          <p class="doc-note">
+            A normal date or date-time <code>RDATE</code> can still be expanded when events are read. That read does not make the series editable.
+          </p>
+        </section>
+
+        <section id="limitations" aria-labelledby="limitations-heading">
+          <h2 id="limitations-heading">Known limitations</h2>
+          <ul class="doc-limitations">
+            <li>Whole-series edits, whole-series deletion, and <code>THISANDFUTURE</code> changes are not supported.</li>
+            <li>To-do lists, YAML setup, and custom search calendars are not included.</li>
+            <li>An update cannot turn a non-recurring event into a recurring series.</li>
+            <li>A recurring occurrence that crosses the spring-forward clock change has not been live-validated.</li>
+            <li>Recorded evidence can show that time-zone data is present. It does not prove that every time-zone line is preserved byte for byte.</li>
+            <li>An Apple event can be found under the observed <code>{'{uid}'}.ics</code> name. That name is not guaranteed on every CalDAV server.</li>
+            <li>The calendar entity still advertises create, update, and delete. An unsupported whole-series request is rejected when it is made.</li>
+          </ul>
+        </section>
+
+        <section class="doc-troubleshooting" id="troubleshooting" aria-labelledby="troubleshooting-heading">
+          <h2 id="troubleshooting-heading">Troubleshooting</h2>
+          <p>
+            These are conditions the integration already reports. They are not provider-specific repair steps.
+          </p>
+          <h3>Setup</h3>
+          <ul>
+            <li><strong>Failed to connect.</strong> Home Assistant could not reach the CalDAV server. A timeout or connection error raises the same kind of failure while the integration starts.</li>
+            <li><strong>Invalid authentication.</strong> The username or password was not accepted. A later write can also report that CalDAV authentication failed.</li>
+            <li><strong>Unexpected error.</strong> Setup hit an error that is not a connection or authentication failure.</li>
+            <li><strong>Account is already configured.</strong> That CalDAV account is already set up.</li>
+          </ul>
+          <h3>Changes that are refused</h3>
+          <p>
+            For the cases below, the integration raises an error and does not write the rejected change:
+          </p>
+          <ul>
+            <li><strong>Recurring event changes are not supported for this calendar.</strong> This covers a whole-series edit or deletion, a <code>THISANDFUTURE</code> change, an unsupported series shape, and an attempt to add a recurrence rule to an existing event.</li>
+            <li><strong>The start or end must stay a timed value, or must stay an all-day date.</strong> An all-day event cannot be changed into a timed event, or the reverse, through this integration.</li>
+            <li><strong>The time zone does not match the stored event.</strong></li>
+            <li><strong>Calendar event end must be after its start.</strong></li>
+          </ul>
+          <h3>Events that cannot be changed safely</h3>
+          <ul>
+            <li><strong>Calendar event was not found.</strong> The requested event is not on the server. A missing event is not created in its place.</li>
+            <li><strong>Calendar event is ambiguous.</strong> More than one stored object matches that event.</li>
+            <li><strong>Calendar event is outside the selected calendar.</strong> The event resource is not inside the confirmed collection. A redirect away from that collection is reported the same way.</li>
+            <li><strong>Calendar event cannot be changed safely without an ETag.</strong> The server did not provide an ETag for the event, so the conditional write stops.</li>
+            <li><strong>CalDAV update or delete conflict: the event changed on the server.</strong> The stored event no longer matches the copy that was read.</li>
+          </ul>
+        </section>
+
+        <section class="doc-faq" id="faq" aria-labelledby="faq-heading">
+          <h2 id="faq-heading">Frequently asked questions</h2>
+          <h3>Is this Home Assistant’s built-in CalDAV integration?</h3>
+          <p>
+            No. CalDAV Full is a separate custom integration. It does not replace or modify the built-in integration.
+          </p>
+          <h3>Can I install it from HACS or GitHub?</h3>
+          <p>
+            No. HACS default-store installation is not available. The integration is not publicly released, and the source repository is private. This site does not offer a download.
+          </p>
+          <h3>What if I leave every calendar unselected?</h3>
+          <p>
+            Confirming that choice creates no calendar entity. The integration can still sign in and list calendar names. Newly discovered calendars stay unselected until you confirm them.
+          </p>
+          <h3>Can I edit or delete a whole recurring series?</h3>
+          <p>
+            No. Whole-series edits, whole-series deletion, and <code>THISANDFUTURE</code> changes are rejected and do not change the stored series. You can create a new series, change one supported occurrence, or exclude one supported occurrence.
+          </p>
+          <h3>Does it support to-do lists?</h3>
+          <p>No.</p>
+        </section>
+
+        <section id="support" aria-labelledby="support-heading">
+          <h2 id="support-heading">Support</h2>
+          <p>
+            Questions and defect reports:{" "}
+            <a class="text-link" href="mailto:contact@grovik.co">contact@grovik.co</a>
+          </p>
+          <p>
+            A public issue tracker is not linked while the source repository remains private.
+          </p>
+        </section>
+      </article>
+    </div>
+  </div>
+</BaseLayout>
