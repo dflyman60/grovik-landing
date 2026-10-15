@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProductPortfolio from "../components/ProductPortfolio.astro";
+---
+
+<BaseLayout
+  title="Grovik"
+  description="We create focused digital products that simplify everyday challenges and make technology more useful."
+>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Grovik LLC</p>
+      <h1 class="hero-title">
+        Thoughtful software.<br />
+        Built for what's next.
+      </h1>
+      <p class="lede">
+        We create focused digital products that simplify everyday challenges and make technology more useful.
+      </p>
+    </div>
+  </section>
+
+  <ProductPortfolio labelledBy="products-heading" variant="home" />
+</BaseLayout>
