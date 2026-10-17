@@ -19,14 +19,14 @@ const sections = [
 
 <BaseLayout
   title="CalDAV Full documentation"
-  description="Documentation for CalDAV Full 0.1.4, a Home Assistant calendar integration for event editing, deletion, and supported recurring-event management."
+  description="Documentation for CalDAV Full 0.1.5, a Home Assistant calendar integration for event editing, deletion, and supported recurring-event management."
 >
   <div class="doc-page">
     <div class="doc-layout">
       <DocNav sections={sections} />
 
       <header class="doc-intro">
-        <p class="status-label">Version 0.1.4</p>
+        <p class="status-label">Version 0.1.5</p>
         <h1>CalDAV Full</h1>
         <p>
           Documentation for the CalDAV Full calendar integration for Home Assistant.{" "}
@@ -44,8 +44,8 @@ const sections = [
             It is a separate integration. It does not replace or modify Home Assistant’s built-in CalDAV integration. It works with calendar events. It does not provide to-do lists.
           </p>
           <p>
-            The published release is version 0.1.4.{" "}
-            <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/releases/tag/0.1.4">Release notes</a>
+            The published release is version 0.1.5.{" "}
+            <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/releases/tag/0.1.5">Release notes</a>
           </p>
         </section>
 
@@ -56,14 +56,14 @@ const sections = [
             <li>Python 3.14.2 or newer, matching that Core release.</li>
             <li>Network access to the CalDAV server.</li>
           </ul>
-          <p>The integration installs these pinned libraries:</p>
+          <p>The integration requires these minimum supported library versions:</p>
           <ul>
-            <li><code>caldav==3.3.0a1</code></li>
-            <li><code>icalendar==6.3.1</code></li>
-            <li><code>vobject==0.9.9</code></li>
+            <li><code>caldav&gt;=3.3.0a1</code></li>
+            <li><code>icalendar&gt;=6.3.1</code></li>
+            <li><code>vobject&gt;=0.9.9</code></li>
           </ul>
           <p>
-            Do not install it on an older Home Assistant Core release. Those library pins match Core 2026.10.0. Compatibility with other Core versions is not established.
+            Do not install it on an older Home Assistant Core release. These minimum versions match the libraries shipped with Home Assistant Core 2026.10.0. Compatibility with other Core versions is not established.
           </p>
         </section>
 
@@ -92,7 +92,7 @@ const sections = [
           <h2 id="installation-heading">Installation</h2>
           <div class="doc-note">
             <p>
-              Install version 0.1.4 from the public repository as a HACS custom repository. CalDAV Full is not in the HACS default store, and this website does not host the download.
+              Install version 0.1.5 from the public repository as a HACS custom repository. CalDAV Full is not in the HACS default store, and this website does not host the download.
             </p>
             <p>
               <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full">github.com/Grovik-LLC/caldav-full</a>
@@ -240,7 +240,7 @@ const sections = [
           </p>
           <h3>Can I install it from HACS or GitHub?</h3>
           <p>
-            Add the public repository as a HACS custom repository, then download version 0.1.4. It is not in the HACS default store. This site does not host the files. The release is at <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/releases/tag/0.1.4">github.com/Grovik-LLC/caldav-full/releases/tag/0.1.4</a>.
+            Add the public repository as a HACS custom repository, then download version 0.1.5. It is not in the HACS default store. This site does not host the files. The release is at <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/releases/tag/0.1.5">github.com/Grovik-LLC/caldav-full/releases/tag/0.1.5</a>.
           </p>
           <h3>What if I leave every calendar unselected?</h3>
           <p>
