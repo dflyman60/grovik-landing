@@ -896,6 +896,143 @@ code {
   }
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.compare-wrap {
+  max-width: 46rem;
+  margin-top: 1.5rem;
+  overflow-x: auto;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.compare-table thead th {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.compare-table tbody th {
+  font-weight: 560;
+}
+
+.doc-content .server-list,
+.page-section .server-list,
+.server-list {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 40rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.doc-content .server-list li + li,
+.server-list li + li {
+  margin-top: 0;
+}
+
+.server-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #fff;
+}
+
+.status-validated,
+.status-partial,
+.status-untested {
+  flex: 0 0 auto;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.status-validated {
+  color: var(--accent-text);
+}
+
+.status-partial {
+  color: var(--ink);
+}
+
+.status-untested {
+  color: var(--muted);
+}
+
+@media (max-width: 40rem) {
+  .compare-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .compare-table,
+  .compare-table tbody,
+  .compare-table tr,
+  .compare-table th,
+  .compare-table td {
+    display: block;
+    width: auto;
+  }
+
+  .compare-table tr {
+    padding: 0.85rem 0 0.95rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .compare-table tbody th,
+  .compare-table td {
+    padding: 0.15rem 0;
+    border: 0;
+  }
+
+  .compare-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
 @media (min-width: 48rem) {
   .product-mark {
     width: 5.5rem;

@@ -5,6 +5,7 @@ import DocNav from "../../components/DocNav.astro";
 const sections = [
   { id: "overview", label: "Overview" },
   { id: "requirements", label: "Requirements and compatibility" },
+  { id: "servers", label: "Calendar servers" },
   { id: "installation", label: "Installation" },
   { id: "configuration", label: "Configuration" },
   { id: "operations", label: "Calendar operations" },
@@ -18,14 +19,14 @@ const sections = [
 
 <BaseLayout
   title="CalDAV Full documentation"
-  description="Documentation for CalDAV Full, a Home Assistant calendar integration. Preview — not publicly released."
+  description="Documentation for CalDAV Full 0.1.4, a Home Assistant calendar integration for event editing, deletion, and supported recurring-event management."
 >
   <div class="doc-page">
     <div class="doc-layout">
       <DocNav sections={sections} />
 
       <header class="doc-intro">
-        <p class="status-label">Preview — Not publicly released</p>
+        <p class="status-label">Version 0.1.4</p>
         <h1>CalDAV Full</h1>
         <p>
           Documentation for the CalDAV Full calendar integration for Home Assistant.{" "}
@@ -43,14 +44,15 @@ const sections = [
             It is a separate integration. It does not replace or modify Home Assistant’s built-in CalDAV integration. It works with calendar events. It does not provide to-do lists.
           </p>
           <p>
-            The current source is version 0.1.0. That version is a preview and has not been publicly released.
+            The published release is version 0.1.4.{" "}
+            <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/releases/tag/0.1.4">Release notes</a>
           </p>
         </section>
 
         <section id="requirements" aria-labelledby="requirements-heading">
           <h2 id="requirements-heading">Requirements and compatibility</h2>
           <ul>
-            <li>Home Assistant Core 2026.10.0.</li>
+            <li>Home Assistant Core 2026.10.0 or newer.</li>
             <li>Python 3.14.2 or newer, matching that Core release.</li>
             <li>Network access to the CalDAV server.</li>
           </ul>
@@ -63,8 +65,26 @@ const sections = [
           <p>
             Do not install it on an older Home Assistant Core release. Those library pins match Core 2026.10.0. Compatibility with other Core versions is not established.
           </p>
+        </section>
+
+        <section id="servers" aria-labelledby="servers-heading">
+          <h2 id="servers-heading">Calendar servers</h2>
           <p>
-            Apple CalDAV has a recorded result for calendar discovery, event reads, creating a series, conditional create, update, and delete of a non-recurring event, and editing or excluding one occurrence of a supported series. That record does not extend to every CalDAV provider. The limits are listed under <a href="#limitations">Known limitations</a>.
+            Isolated tests covered discovery, single-event changes, one occurrence, whole-series text, and whole-series deletion.
+          </p>
+          <ul class="server-list">
+            <li class="server-row"><span>Apple iCloud Calendar</span><span class="status-validated">Validated</span></li>
+            <li class="server-row"><span>Nextcloud Calendar</span><span class="status-validated">Validated</span></li>
+            <li class="server-row"><span>Baïkal</span><span class="status-validated">Validated</span></li>
+            <li class="server-row"><span>Radicale 3.8.3</span><span class="status-validated">Validated</span></li>
+            <li class="server-row"><span>SOGo 5.12.12</span><span class="status-partial">Partially compatible</span></li>
+            <li class="server-row"><span>Synology Calendar</span><span class="status-untested">Not tested</span></li>
+          </ul>
+          <p>
+            Apple spring-forward occurrence handling was not live-validated. Production Apple acceptance covered sign-in and single-event create, edit, delete, and sync.
+          </p>
+          <p>
+            SOGo 5.12.12 completed the tested operations when the ETag was current. A stale <code>If-Match</code> on PUT returns a conflict. DELETE ignores <code>If-Match</code>, including a stale, unknown, or malformed tag, and still removes the object. SOGo is not fully supported for safe concurrent deletion.
           </p>
         </section>
 
@@ -72,17 +92,18 @@ const sections = [
           <h2 id="installation-heading">Installation</h2>
           <div class="doc-note">
             <p>
-              CalDAV Full is not publicly released. The source repository is currently private. HACS default-store installation is not available. There is no public download on this website.
+              Install version 0.1.4 from the public repository as a HACS custom repository. CalDAV Full is not in the HACS default store, and this website does not host the download.
             </p>
             <p>
-              The steps below apply only to someone who already has authorized access to the source.
+              <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full">github.com/Grovik-LLC/caldav-full</a>
             </p>
           </div>
           <ol class="doc-steps">
-            <li>Copy <code>custom_components/caldav_full</code> into the Home Assistant <code>config/custom_components</code> directory.</li>
+            <li>In HACS, add <code>https://github.com/Grovik-LLC/caldav-full</code> as a custom repository of type Integration, then download CalDAV Full.</li>
             <li>Restart Home Assistant.</li>
             <li>Go to Settings, Devices &amp; services, Add integration, and choose CalDAV Full.</li>
           </ol>
+          <p>You can also copy <code>custom_components/caldav_full</code> into the Home Assistant <code>config/custom_components</code> directory, then restart and add the integration.</p>
         </section>
 
         <section id="configuration" aria-labelledby="configuration-heading">
@@ -94,6 +115,10 @@ const sections = [
             <li>Password</li>
             <li>Whether to verify the SSL certificate</li>
           </ul>
+          <p>
+            For Apple iCloud, enter an app-specific password. The account needs two-factor authentication. Apple’s steps are at{" "}
+            <a class="text-link" href="https://support.apple.com/en-us/102654">support.apple.com/en-us/102654</a>. Other CalDAV servers use their own password.
+          </p>
           <p>
             After sign-in, CalDAV Full lists calendar names. A new setup starts with nothing selected. Newly discovered calendars stay unselected. A checked calendar is not activated until the confirmation step. Closing the dialog does not save.
           </p>
@@ -120,6 +145,8 @@ const sections = [
             <li>Read events, including all-day events, timed events, and expanded occurrences of a supported series.</li>
             <li>Create an event. A create can include one recurrence rule, which creates a new series. A create can also include a description and a location.</li>
             <li>Update or delete one non-recurring event. The write uses that event’s ETag, so a change is sent only when the stored copy still matches.</li>
+            <li>Change the title, description, and location of a whole series. The start, end, and repeat rule are left as stored.</li>
+            <li>Delete one whole series with a single conditional delete.</li>
           </ul>
           <p>
             A selected calendar polls for the next event about every 15 minutes. Opening a date range reads that range from the server.
@@ -136,12 +163,17 @@ const sections = [
             <li>Create a series by including one recurrence rule on a new event.</li>
             <li>Update one occurrence of a supported series. CalDAV Full writes an override for that occurrence’s original start.</li>
             <li>Exclude one occurrence of a supported series. CalDAV Full writes an exclusion and keeps the rest of the series.</li>
+            <li>Change the title, description, and location of a whole series. An omitted description or location is left unchanged. An explicit empty value clears that field.</li>
+            <li>Delete a whole series.</li>
           </ul>
+          <p class="doc-note">
+            Home Assistant’s built-in calendar editor does not expose whole-series editing or deletion. That screen offers “Only this event” and “This and all future events.” Use the editor for one occurrence. Whole-series title, description, location, and deletion are available to clients that send a series-level update or delete without a recurrence range. Family Calendar Card v3.1.3 was checked only for one non-recurring create, title and location edit, and delete. Recurring operations on that card were not tested.
+          </p>
           <h3>Not supported</h3>
           <p>These requests are rejected before the stored series is changed:</p>
           <ul class="doc-limitations">
-            <li>Editing an entire recurring series.</li>
-            <li>Deleting an entire recurring series.</li>
+            <li>Moving a series, or changing its duration.</li>
+            <li>Changing the repeat rule, including how many times it repeats or when it ends.</li>
             <li>A <code>THISANDFUTURE</code> change, which would apply to one occurrence and the occurrences after it.</li>
             <li>Adding or changing a recurrence rule on an existing non-recurring event.</li>
             <li>A series with more than one <code>RRULE</code>.</li>
@@ -157,13 +189,13 @@ const sections = [
         <section id="limitations" aria-labelledby="limitations-heading">
           <h2 id="limitations-heading">Known limitations</h2>
           <ul class="doc-limitations">
-            <li>Whole-series edits, whole-series deletion, and <code>THISANDFUTURE</code> changes are not supported.</li>
+            <li>Moving a series, changing its duration or repeat rule, and <code>THISANDFUTURE</code> changes are not supported. Title, description, location, and deletion of a whole series are supported, but the built-in calendar editor does not offer them.</li>
             <li>To-do lists, YAML setup, and custom search calendars are not included.</li>
             <li>An update cannot turn a non-recurring event into a recurring series.</li>
             <li>A recurring occurrence that crosses the spring-forward clock change has not been live-validated.</li>
             <li>Recorded evidence can show that time-zone data is present. It does not prove that every time-zone line is preserved byte for byte.</li>
             <li>An Apple event can be found under the observed <code>{'{uid}'}.ics</code> name. That name is not guaranteed on every CalDAV server.</li>
-            <li>The calendar entity still advertises create, update, and delete. An unsupported whole-series request is rejected when it is made.</li>
+            <li>The calendar entity advertises create, update, and delete. A request to move a series, change its rule, or apply “this and all future events” is rejected when it is made.</li>
           </ul>
         </section>
 
@@ -184,7 +216,8 @@ const sections = [
             For the cases below, the integration raises an error and does not write the rejected change:
           </p>
           <ul>
-            <li><strong>Recurring event changes are not supported for this calendar.</strong> This covers a whole-series edit or deletion, a <code>THISANDFUTURE</code> change, an unsupported series shape, and an attempt to add a recurrence rule to an existing event.</li>
+            <li><strong>Recurring event changes are not supported for this calendar.</strong> This covers a <code>THISANDFUTURE</code> change, an unsupported series shape, and an attempt to add a recurrence rule to an existing event.</li>
+            <li><strong>Changing the time of a whole series is not supported yet.</strong> A series-level update included a start or end that does not match a displayed occurrence.</li>
             <li><strong>Start must stay a timed value</strong> or <strong>End must stay a timed value</strong>. <strong>Start must stay an all-day date</strong> or <strong>End must stay an all-day date</strong>. An all-day event cannot be changed into a timed event, or the reverse, through this integration.</li>
             <li><strong>Start time zone does not match the stored event</strong> or <strong>End time zone does not match the stored event</strong>.</li>
             <li><strong>Calendar event end must be after its start.</strong></li>
@@ -207,7 +240,7 @@ const sections = [
           </p>
           <h3>Can I install it from HACS or GitHub?</h3>
           <p>
-            No. HACS default-store installation is not available. The integration is not publicly released, and the source repository is private. This site does not offer a download.
+            Add the public repository as a HACS custom repository, then download version 0.1.4. It is not in the HACS default store. This site does not host the files. The release is at <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/releases/tag/0.1.4">github.com/Grovik-LLC/caldav-full/releases/tag/0.1.4</a>.
           </p>
           <h3>What if I leave every calendar unselected?</h3>
           <p>
@@ -215,7 +248,7 @@ const sections = [
           </p>
           <h3>Can I edit or delete a whole recurring series?</h3>
           <p>
-            No. Whole-series edits, whole-series deletion, and <code>THISANDFUTURE</code> changes are rejected and do not change the stored series. You can create a new series, change one supported occurrence, or exclude one supported occurrence.
+            You can change the title, description, and location, or delete the series. The built-in calendar editor does not show those choices. Moving the series, changing its duration or repeat rule, and “this and all future events” are rejected and do not change the stored series.
           </p>
           <h3>Does it support to-do lists?</h3>
           <p>No.</p>
@@ -228,7 +261,8 @@ const sections = [
             <a class="text-link" href="mailto:contact@grovik.co">contact@grovik.co</a>
           </p>
           <p>
-            A public issue tracker is not linked while the source repository remains private.
+            Public issue tracker:{" "}
+            <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/issues">github.com/Grovik-LLC/caldav-full/issues</a>
           </p>
         </section>
       </article>

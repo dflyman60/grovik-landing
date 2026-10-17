@@ -3,27 +3,47 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const capabilities = [
   {
-    title: "Connect & Select",
+    title: "Connect and select",
     text: "Connect to a CalDAV account and choose which discovered calendars to expose.",
   },
   {
-    title: "Read & Create",
-    text: "Read calendar events and create new events, including supported recurring series.",
+    title: "Edit and delete",
+    text: "Change or remove a calendar event. The built-in CalDAV integration can view and create events.",
   },
   {
-    title: "Edit Events",
-    text: "Update or delete supported non-recurring events.",
+    title: "One occurrence",
+    text: "Edit or exclude a single occurrence of a supported recurring series.",
   },
   {
-    title: "Recurring Occurrences",
-    text: "Modify or exclude an individual occurrence of a supported recurring series.",
+    title: "A whole series",
+    text: "Change the series title, description, and location, or delete the series. The start, end, and repeat rule stay as stored.",
   },
+];
+
+const comparison = [
+  ["View events", "Yes", "Yes"],
+  ["Create events", "Yes", "Yes"],
+  ["Edit events", "No", "Yes"],
+  ["Delete events", "No", "Yes"],
+  ["Create a recurring series", "Yes", "Yes"],
+  ["Edit or exclude one occurrence", "No", "Yes"],
+  ["Edit a series title, description, or location", "No", "Yes"],
+  ["Delete a whole series", "No", "Yes"],
+];
+
+const servers = [
+  { name: "Apple iCloud Calendar", status: "Validated", tone: "validated" },
+  { name: "Nextcloud Calendar", status: "Validated", tone: "validated" },
+  { name: "Baïkal", status: "Validated", tone: "validated" },
+  { name: "Radicale 3.8.3", status: "Validated", tone: "validated" },
+  { name: "SOGo 5.12.12", status: "Partially compatible", tone: "partial" },
+  { name: "Synology Calendar", status: "Not tested", tone: "untested" },
 ];
 ---
 
 <BaseLayout
   title="CalDAV Full"
-  description="A Home Assistant calendar integration for connecting to CalDAV calendars and managing supported event operations. Preview — not publicly released."
+  description="CalDAV Full brings event editing, deletion, and supported recurring-event management to Home Assistant's CalDAV integration. Version 0.1.4."
 >
   <div class="product-page">
     <header class="page-intro product-hero">
@@ -35,10 +55,10 @@ const capabilities = [
           height="472"
           alt=""
         />
-        <p class="status-label">Preview — Not publicly released</p>
+        <p class="status-label">Version 0.1.4</p>
         <h1 class="product-title">CalDAV Full</h1>
         <p class="lede">
-          A Home Assistant calendar integration for connecting to CalDAV calendars and managing supported event operations.
+          CalDAV Full brings event editing, deletion, and supported recurring-event management to Home Assistant’s CalDAV integration.
         </p>
       </div>
     </header>
@@ -71,15 +91,74 @@ const capabilities = [
       </div>
     </section>
 
+    <section class="page-section" aria-labelledby="compare-heading">
+      <div class="wrap">
+        <h2 id="compare-heading">Compared with Home Assistant CalDAV</h2>
+        <p>
+          The built-in integration views and creates events. CalDAV Full adds editing, deletion, and the recurring operations below.
+        </p>
+        <div class="compare-wrap">
+          <table class="compare-table">
+            <caption class="sr-only">Home Assistant CalDAV compared with CalDAV Full</caption>
+            <thead>
+              <tr>
+                <th scope="col">Operation</th>
+                <th scope="col">Home Assistant CalDAV</th>
+                <th scope="col">CalDAV Full</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                comparison.map(([operation, builtin, full]) => (
+                  <tr>
+                    <th scope="row">{operation}</th>
+                    <td data-label="Home Assistant CalDAV">{builtin}</td>
+                    <td data-label="CalDAV Full">{full}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <section class="page-section" aria-labelledby="recurring-heading">
       <div class="wrap">
         <h2 id="recurring-heading">Recurring events</h2>
         <p>
-          You can edit or exclude an individual occurrence of a supported recurring series. Whole-series editing and deletion are not supported, and neither are <code>THISANDFUTURE</code> changes.
+          Version 0.1.4 can change the title, description, and location of a whole series, and it can delete that series. Those changes do not move the series start or end, and they do not change the repeat rule.
         </p>
         <p>
-          Additional recurrence restrictions are documented in{" "}
-          <a class="text-link" href="/caldav-full#recurring-events">Recurring events</a>.
+          Home Assistant’s built-in calendar editor does not offer an “All events” choice. It can create events, edit one occurrence, and exclude one occurrence. “This and all future events” is rejected and does not change the stored series.
+        </p>
+        <p>
+          Moving a series, changing its duration or repeat rule, and editing this occurrence together with every later occurrence are not supported.
+        </p>
+        <p>
+          <a class="text-link" href="/caldav-full#recurring-events">Recurring events in the documentation</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="servers-heading">
+      <div class="wrap">
+        <h2 id="servers-heading">Calendar servers</h2>
+        <p>
+          Isolated tests covered discovery, single-event changes, one occurrence, whole-series text, and whole-series deletion.
+        </p>
+        <ul class="server-list">
+          {
+            servers.map((server) => (
+              <li class="server-row">
+                <span>{server.name}</span>
+                <span class={`status-${server.tone}`}>{server.status}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p>
+          SOGo 5.12.12 completed those operations when the ETag was current. It does not honor <code>If-Match</code> on DELETE, so a delete with a stale tag can still remove the event. SOGo is not fully supported for safe concurrent deletion.
         </p>
       </div>
     </section>
@@ -88,7 +167,7 @@ const capabilities = [
       <div class="wrap">
         <h2 id="requirements-heading">Requirements</h2>
         <ul>
-          <li>Home Assistant Core 2026.10.0.</li>
+          <li>Home Assistant Core 2026.10.0 or newer.</li>
           <li>Network access to a CalDAV server.</li>
           <li>Compatibility is limited to the verified implementation and documented testing.</li>
         </ul>
@@ -115,8 +194,15 @@ const capabilities = [
     <section class="page-section" aria-labelledby="availability-heading">
       <div class="wrap">
         <h2 id="availability-heading">Availability</h2>
-        <p class="status-label">Preview — Not publicly released</p>
-        <p>CalDAV Full is not currently available as a public download.</p>
+        <p class="status-label">Version 0.1.4</p>
+        <p>
+          Install CalDAV Full from the HACS custom repository. It is not in the HACS default store.
+        </p>
+        <p>
+          <a class="text-link" href="https://github.com/Grovik-LLC/caldav-full/releases/tag/0.1.4">
+            CalDAV Full 0.1.4 on GitHub
+          </a>
+        </p>
       </div>
     </section>
   </div>
